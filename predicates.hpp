@@ -40,13 +40,14 @@ namespace predicates {
     }
 
 
-    template <size_t N, IndexSet<N> Is, IndexSet<N> Js, typename Matrix, typename Scalar>
+    template <size_t N, IndexSet<N> Is, IndexSet<N> Js>
     struct determinant_helper;
 
 
-    template <IndexSet<2> Is, IndexSet<2> Js, typename Matrix, typename Scalar>
-    struct determinant_helper<2, Is, Js, Matrix, Scalar> {
-        Scalar operator()(const Matrix& matrix) {
+    template <IndexSet<2> Is, IndexSet<2> Js>
+    struct determinant_helper<2, Is, Js> {
+        template <typename Scalar, typename Matrix>
+        Scalar run(const Matrix& matrix) {
             return
                 Scalar(matrix(Is[0], Js[0])) * Scalar(matrix(Is[1], Js[1]))
                 -
@@ -54,15 +55,16 @@ namespace predicates {
         }
     };
 
-    template <size_t N, IndexSet<N> Is, IndexSet<N> Js, typename Matrix, typename Scalar>
+    template <size_t N, IndexSet<N> Is, IndexSet<N> Js>
     struct determinant_helper {
-        Scalar operator()(const Matrix& matrix) {
+        template <typename Scalar, typename Matrix>
+        Scalar run(const Matrix& matrix) {
             Scalar result = 0;
             auto fn = [&](auto k) {
                 auto m_ij = Scalar(matrix(Is[0], Js[k]));
                 using helper =
-                    determinant_helper<N - 1, drop<0>(Is), drop<k>(Js), Matrix, Scalar>;
-                auto det = m_ij * helper()(matrix);
+                    determinant_helper<N - 1, drop<0>(Is), drop<k>(Js)>;
+                auto det = m_ij * helper().template run<Scalar>(matrix);
                 result = result + (((k % 2) == 0) ? +1 : -1) * det;
             };
             constexpr_for<0, N, 1>(fn);
@@ -74,6 +76,6 @@ namespace predicates {
     template <size_t N, typename Scalar, typename Matrix>
     auto determinant(const Matrix& matrix) {
         constexpr auto Is = make_index_set<N>();
-        return determinant_helper<N, Is, Is, Matrix, Scalar>()(matrix);
+        return determinant_helper<N, Is, Is>().template run<Scalar>(matrix);
     }
 }
