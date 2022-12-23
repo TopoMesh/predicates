@@ -4,13 +4,8 @@
 #include <boost/multiprecision/cpp_int.hpp>
 #include "predicates.hpp"
 
+
 int main() {
-
-    {
-        constexpr predicates::IndexSet<4> r = predicates::make_index_set<4>();
-        constexpr predicates::IndexSet<3> s = predicates::drop<0>(r);
-    }
-
     {
         Eigen::Matrix<double, 2, 2> M;
         M << 1, 2, 3, 4;

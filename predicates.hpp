@@ -1,6 +1,11 @@
 #pragma once
 
 #include <Eigen/Core>
+#include <Eigen/Dense>
+#include <boost/numeric/interval.hpp>
+#include <boost/numeric/interval/utility.hpp>
+#include <boost/multiprecision/cpp_int.hpp>
+#include <boost/multiprecision/eigen.hpp>
 #include <array>
 
 namespace predicates {
@@ -83,7 +88,10 @@ namespace predicates {
                 using helper =
                     determinant_helper<N - 1, drop<0>(Is), drop<k>(Js)>;
                 auto det = m_ij * helper().template run<Scalar>(matrix);
-                result = result + (((k % 2) == 0) ? +1 : -1) * det;
+                if (k % 2 == 0)
+                    result += det;
+                else
+                    result -= det;
             };
             constexpr_for<0, N, 1>(fn);
             return result;
@@ -108,4 +116,20 @@ namespace predicates {
             return helper().template run<Result>(matrix);
         }
     };
+
+
+    /**
+     * Sign-exact determinant computation on Eigen matrices using intervals as
+     * a first resort and rationals as a fallback.
+     */
+    template <typename T, int N>
+    T determinant(const Eigen::Matrix<T, N, N>& matrix) {
+        using Interval = boost::numeric::interval<T>;
+        auto result = Determinant<Interval>::run(matrix);
+        if (not boost::numeric::zero_in(result))
+            return boost::numeric::median(result);
+
+        using Rational = boost::multiprecision::cpp_rational;
+        return Determinant<Rational>::run(matrix).template convert_to<T>();
+    }
 }
