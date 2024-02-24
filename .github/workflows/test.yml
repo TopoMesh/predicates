@@ -1,0 +1,17 @@
+name: 'Build and test predicates'
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -yq libeigen3-dev libboost-all-dev
+      - name: Build and test
+        run: |
+          make
+          ./main
+          ./bench
