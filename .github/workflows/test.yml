@@ -3,13 +3,24 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        boost_version: [70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84]
     steps:
       - name: Check out git repository
         uses: actions/checkout@v3
-      - name: Install dependencies
+      - name: Install Eigen
         run: |
           sudo apt update
-          sudo apt install -yq libeigen3-dev libboost-all-dev
+          sudo apt install -yq libeigen3-dev
+      - name: Install Boost
+        run: |
+          wget -O boost.tar.gz https://boostorg.jfrog.io/artifactory/main/release/1.${{ matrix.boost_version}}.0/source/boost_1_${{ matrix.boost_version }}_0.tar.gz
+          mkdir boost
+          tar xf boost.tar.gz -C boost --strip-components 1
+          cd boost
+          ./bootstrap.sh --with-libraries=math
+          sudo ./b2 install
       - name: Build and test
         run: |
           make
