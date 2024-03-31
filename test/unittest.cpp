@@ -2,7 +2,7 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <boost/multiprecision/cpp_int.hpp>
-#include "predicates.hpp"
+#include <predicates/predicates.hpp>
 
 
 int main() {

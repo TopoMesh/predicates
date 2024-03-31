@@ -8,7 +8,7 @@ jobs:
         boost_version: [70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84]
     steps:
       - name: Check out git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install Eigen
         run: |
           sudo apt update
@@ -21,8 +21,13 @@ jobs:
           cd boost
           ./bootstrap.sh --with-libraries=math
           sudo ./b2 install
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install meson
+        run: pip install meson ninja
       - name: Build and test
         run: |
-          make
-          ./main
-          ./bench
+          meson setup builddir/
+          meson test -C builddir/ -v

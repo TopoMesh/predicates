@@ -1,5 +1,5 @@
 #include <Eigen/Dense>
-#include "predicates.hpp"
+#include <predicates/predicates.hpp>
 #include <chrono>
 #include <random>
 
