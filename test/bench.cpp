@@ -37,7 +37,6 @@ int main() {
         const size_t num_trials = 100000;
         const auto rng_duration = benchmark<dimension, false>(rng, engine, num_trials);
         const auto pred_duration = benchmark<dimension, true>(rng, engine, num_trials);
-        using unit = std::chrono::nanoseconds;
         std::cout << "    generating random numbers:  "
                   << rng_duration.count() / (1e3 * num_trials) << " μs / iter\n";
         std::cout << "    RNG + computing predicates: "
@@ -50,7 +49,6 @@ int main() {
         const size_t num_trials = 50000;
         const auto rng_duration = benchmark<dimension, false>(rng, engine, num_trials);
         const auto pred_duration = benchmark<dimension, true>(rng, engine, num_trials);
-        using unit = std::chrono::nanoseconds;
         std::cout << "    generating random numbers:  "
                   << rng_duration.count() / (1e3 * num_trials) << " μs / iter\n";
         std::cout << "    RNG + computing predicates: "
@@ -63,7 +61,6 @@ int main() {
         const size_t num_trials = 12500;
         const auto rng_duration = benchmark<dimension, false>(rng, engine, num_trials);
         const auto pred_duration = benchmark<dimension, true>(rng, engine, num_trials);
-        using unit = std::chrono::nanoseconds;
         std::cout << "    generating random numbers:  "
                   << rng_duration.count() / (1e3 * num_trials) << " μs / iter\n";
         std::cout << "    RNG + computing predicates: "
