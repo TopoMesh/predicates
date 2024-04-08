@@ -3,7 +3,7 @@ project('predicates', 'cpp',
   default_options : ['cpp_std=c++20'])
 
 headers = ['include/predicates/predicates.hpp']
-install_headers(headers, subdir : 'predicates')
+install_headers(headers, subdir: 'predicates')
 
 include_dir = include_directories('include')
 predicates_dep = declare_dependency(include_directories: include_dir)
@@ -19,3 +19,11 @@ unittest = executable('unittest', 'test/unittest.cpp',
 
 test('benchmark', bench)
 test('unittest', unittest)
+
+pkg = import('pkgconfig')
+pkg.generate(
+  name: 'predicates',
+  filebase: 'predicates',
+  subdirs: ['predicates'],
+  version: meson.project_version(),
+  description: 'Sign-exact geometric predicates')
