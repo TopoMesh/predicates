@@ -1,6 +1,6 @@
 project('predicates', 'cpp',
   version: '0.0.1',
-  default_options : ['cpp_std=c++20'])
+  default_options : ['cpp_std=c++20', 'python.install_env=auto'])
 
 # Set up the dependencies and install targets
 headers = ['include/predicates/predicates.hpp']
@@ -26,6 +26,7 @@ python.extension_module('predicates',
   sources: ['src/pypredicates.cpp'],
   include_directories: include_dir,
   dependencies: [python.dependency(), dependency('pybind11'), dependencies],
+  install: true,
 )
 
 # Generate a pkg-config file so other libraries can find us
