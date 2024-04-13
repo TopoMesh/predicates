@@ -1,0 +1,14 @@
+[project]
+name = "predicates"
+version = "0.0.1"
+description = "Sign-exact geometric predicates"
+authors = [
+    {name = "Daniel Shapero", email="shapero.daniel@gmail.com"}
+]
+dependencies = ["numpy>=1.24.3"]
+requires-python = ">=3.8"
+readme = "README.md"
+
+[build-system]
+requires = ["pybind11", "meson-python", "ninja"]
+build-backend = "mesonpy"
