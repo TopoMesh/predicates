@@ -32,7 +32,7 @@ namespace predicates {
      */
     template <size_t N>
     constexpr IndexSet<N> make_index_set() {
-        IndexSet<N> result;
+        IndexSet<N> result{};
         for (size_t i = 0; i < N; ++i)
             result[i] = i;
         return result;
