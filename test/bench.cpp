@@ -17,7 +17,7 @@ auto benchmark(auto& rng, auto& engine, size_t num_trials) {
                 matrix(m, n) = rng(engine);
 
         if constexpr(compute_pred)
-            predicates::determinant(matrix);
+            predicates::sign_exact_determinant(matrix);
     }
     const auto stop_time = std::chrono::high_resolution_clock::now();
     return stop_time - start_time;

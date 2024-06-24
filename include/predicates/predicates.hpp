@@ -55,21 +55,20 @@ namespace predicates {
     /**
      * Helper class for computing determinants of sub-matrices
      */
-    template <size_t N, IndexSet<N> Is, IndexSet<N> Js>
+    template <typename T, size_t N, size_t M, IndexSet<M> Is, IndexSet<M> Js>
     struct determinant_helper;
 
 
     /**
      * Base case: the determinant of a 2 x 2 matrix
      */
-    template <IndexSet<2> Is, IndexSet<2> Js>
-    struct determinant_helper<2, Is, Js> {
-        template <typename Scalar, typename Matrix>
-        Scalar run(const Matrix& matrix) {
+    template <typename T, size_t N, IndexSet<2> Is, IndexSet<2> Js>
+    struct determinant_helper<T, N, 2, Is, Js> {
+        T run(const Eigen::Matrix<T, N, N>& matrix) {
             return
-                Scalar(matrix(Is[0], Js[0])) * Scalar(matrix(Is[1], Js[1]))
+                matrix(Is[0], Js[0]) * matrix(Is[1], Js[1])
                 -
-                Scalar(matrix(Is[0], Js[1])) * Scalar(matrix(Is[1], Js[0]));
+                matrix(Is[0], Js[1]) * matrix(Is[1], Js[0]);
         }
     };
 
@@ -78,22 +77,21 @@ namespace predicates {
      * Induction case: the determinant of an N x N matrix is the alternating
      * sum of the determinants of (N - 1) x (N - 1) sub-matrices
      */
-    template <size_t N, IndexSet<N> Is, IndexSet<N> Js>
+    template <typename T, size_t N, size_t M, IndexSet<M> Is, IndexSet<M> Js>
     struct determinant_helper {
-        template <typename Scalar, typename Matrix>
-        Scalar run(const Matrix& matrix) {
-            Scalar result = 0;
+        T run(const Eigen::Matrix<T, N, N>& matrix) {
+            T result = 0;
             auto fn = [&](auto k) {
-                auto m_ij = Scalar(matrix(Is[0], Js[k]));
+                auto m_ij = matrix(Is[0], Js[k]);
                 using helper =
-                    determinant_helper<N - 1, drop<0>(Is), drop<k>(Js)>;
-                auto det = m_ij * helper().template run<Scalar>(matrix);
+                    determinant_helper<T, N, M - 1, drop<0>(Is), drop<k>(Js)>;
+                auto det = m_ij * helper().run(matrix);
                 if (k % 2 == 0)
                     result += det;
                 else
                     result -= det;
             };
-            constexpr_for<0, N, 1>(fn);
+            constexpr_for<0, M, 1>(fn);
             return result;
         }
     };
@@ -101,21 +99,12 @@ namespace predicates {
 
     /**
      * The outer-level interface to computing determinants of Eigen matrices.
-     *
-     * A critical feature is that we can internally convert all the matrix
-     * entries to a type `Result` that may differ from the type `Scalar` used
-     * to store the matrix entries. That way we can get determinants using
-     * interval or rational arithmetic.
      */
-    template <typename Result>
-    struct Determinant {
-        template <typename Scalar, int N>
-        static Result run(const Eigen::Matrix<Scalar, N, N>& matrix) {
-            constexpr auto Is = make_index_set<N>();
-            using helper = determinant_helper<N, Is, Is>;
-            return helper().template run<Result>(matrix);
-        }
-    };
+    template <typename T, int N>
+    T determinant(const Eigen::Matrix<T, N, N>& matrix) {
+        constexpr auto Is = make_index_set<N>();
+        return determinant_helper<T, N, N, Is, Is>().run(matrix);
+    }
 
 
     /**
@@ -123,13 +112,17 @@ namespace predicates {
      * a first resort and rationals as a fallback.
      */
     template <typename T, int N>
-    T determinant(const Eigen::Matrix<T, N, N>& matrix) {
+    T sign_exact_determinant(const Eigen::Matrix<T, N, N>& matrix) {
         using Interval = boost::numeric::interval<T>;
-        auto result = Determinant<Interval>::run(matrix);
-        if (not boost::numeric::zero_in(result))
-            return boost::numeric::median(result);
+        const Eigen::Matrix<Interval, N, N> interval_matrix =
+            matrix.template cast<Interval>();
+        const Interval interval_result = determinant(interval_matrix);
+        if (not boost::numeric::zero_in(interval_result))
+            return boost::numeric::median(interval_result);
 
         using Rational = boost::multiprecision::cpp_rational;
-        return Determinant<Rational>::run(matrix).template convert_to<T>();
+        const Eigen::Matrix<Rational, N, N> rational_matrix =
+            matrix.template cast<Rational>();
+        return determinant(rational_matrix).template convert_to<T>();
     }
 }

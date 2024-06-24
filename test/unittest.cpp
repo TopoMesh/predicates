@@ -10,7 +10,7 @@ int main() {
         Eigen::Matrix<double, 2, 2> M;
         M << 1, 2, 3, 4;
         double exact = M.determinant();
-        double det = predicates::Determinant<double>::run(M);
+        double det = predicates::determinant(M);
         std::cout << exact << ", " << det << "\n";
     }
 
@@ -20,11 +20,12 @@ int main() {
         M << 1, 1, 1,
              0.5, 12.0, 24.0,
              z, 12.0, 24.0;
-        double det = predicates::Determinant<double>::run(M);
+        double det = predicates::determinant(M);
         std::cout << det << "\n";
 
         using Rational = boost::multiprecision::cpp_rational;
-        Rational qdet = predicates::Determinant<Rational>::run(M);
+        const Eigen::Matrix<Rational, 3, 3> N = M.cast<Rational>();
+        Rational qdet = predicates::determinant(N);
         std::cout << qdet << "\n";
     }
 

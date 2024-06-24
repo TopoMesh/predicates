@@ -18,7 +18,7 @@ def test_nearly_collinear():
         zs[2, 0] = math.nextafter(zs[2, 0], math.inf)
         for col in range(num_steps):
             zs[1, 0] = math.nextafter(zs[1, 0], math.inf)
-            result = predicates.determinant(zs)
+            result = predicates.sign_exact_determinant(zs)
             if row == col:
                 assert result == 0.0
             elif row < col:
