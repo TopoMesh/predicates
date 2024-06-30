@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         boost_version: [71, 74, 83, 84]
-        gcc_version: [9, 10, 11]
+        gcc_version: [10, 11]
       fail-fast: false
     env:
       CC: gcc-${{ matrix.gcc_version }}
