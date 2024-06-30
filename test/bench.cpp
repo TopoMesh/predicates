@@ -7,7 +7,13 @@ using std::size_t;
 
 
 template <size_t dimension, bool compute_pred>
-auto benchmark(auto& rng, auto& engine, size_t num_trials) {
+auto benchmark(size_t num_trials) {
+    std::random_device device;
+    std::default_random_engine engine(device());
+    const double mean = 0.0;
+    const double stddev = 1.0;
+    std::normal_distribution<double> rng(mean, stddev);
+
     const auto start_time = std::chrono::high_resolution_clock::now();
     for (size_t trial = 0; trial < num_trials; ++trial) {
         Eigen::Matrix<double, dimension + 1, dimension + 1> matrix;
@@ -25,18 +31,12 @@ auto benchmark(auto& rng, auto& engine, size_t num_trials) {
 
 
 int main() {
-    std::random_device device;
-    std::default_random_engine engine(device());
-    const double mean = 0.0;
-    const double stddev = 1.0;
-    std::normal_distribution<double> rng(mean, stddev);
-
     {
         std::cout << "Dimension 2. Time for:\n";
         constexpr size_t dimension = 2;
         const size_t num_trials = 100000;
-        const auto rng_duration = benchmark<dimension, false>(rng, engine, num_trials);
-        const auto pred_duration = benchmark<dimension, true>(rng, engine, num_trials);
+        const auto rng_duration = benchmark<dimension, false>(num_trials);
+        const auto pred_duration = benchmark<dimension, true>(num_trials);
         std::cout << "    generating random numbers:  "
                   << rng_duration.count() / (1e3 * num_trials) << " μs / iter\n";
         std::cout << "    RNG + computing predicates: "
@@ -47,8 +47,8 @@ int main() {
         std::cout << "Dimension 3. Time for:\n";
         constexpr size_t dimension = 3;
         const size_t num_trials = 50000;
-        const auto rng_duration = benchmark<dimension, false>(rng, engine, num_trials);
-        const auto pred_duration = benchmark<dimension, true>(rng, engine, num_trials);
+        const auto rng_duration = benchmark<dimension, false>(num_trials);
+        const auto pred_duration = benchmark<dimension, true>(num_trials);
         std::cout << "    generating random numbers:  "
                   << rng_duration.count() / (1e3 * num_trials) << " μs / iter\n";
         std::cout << "    RNG + computing predicates: "
@@ -59,8 +59,8 @@ int main() {
         std::cout << "Dimension 4. Time for:\n";
         constexpr size_t dimension = 4;
         const size_t num_trials = 12500;
-        const auto rng_duration = benchmark<dimension, false>(rng, engine, num_trials);
-        const auto pred_duration = benchmark<dimension, true>(rng, engine, num_trials);
+        const auto rng_duration = benchmark<dimension, false>(num_trials);
+        const auto pred_duration = benchmark<dimension, true>(num_trials);
         std::cout << "    generating random numbers:  "
                   << rng_duration.count() / (1e3 * num_trials) << " μs / iter\n";
         std::cout << "    RNG + computing predicates: "
