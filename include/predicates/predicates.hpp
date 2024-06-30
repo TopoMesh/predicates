@@ -125,4 +125,20 @@ namespace predicates {
             matrix.template cast<Rational>();
         return determinant(rational_matrix).template convert_to<T>();
     }
+
+
+    /**
+     * Sign-exact computation of the orientation of a set of `N + 1` points in
+     * Euclidean `N`-space, i.e. whether the simplex they form in their current
+     * order is right- or left-handed
+     */
+    template <typename T, int N>
+    T orientation(const Eigen::Matrix<T, N, N + 1>& points) {
+        Eigen::Matrix<T, N + 1, N + 1> matrix;
+        // TODO: benchmark this vs doing the alternating sum directly
+        matrix.template block<N, N + 1>(1, 0) = points;
+        matrix.template block<1, N + 1>(0, 0) = Eigen::Matrix<T, 1, N + 1>::Constant(1);
+        return sign_exact_determinant(matrix);
+    }
+
 }

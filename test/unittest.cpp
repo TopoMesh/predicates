@@ -29,5 +29,13 @@ int main() {
         std::cout << qdet << "\n";
     }
 
+    {
+        Eigen::Matrix<double, 2, 3> M;
+        const double z = std::nextafter(0.5, 1.5);
+        M << 0.5, 12.0, 24.0,
+             z, 12.0, 24.0;
+        std::cout << predicates::orientation(M) << "\n";
+    }
+
     return 0;
 }
