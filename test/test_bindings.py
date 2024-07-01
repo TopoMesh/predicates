@@ -1,5 +1,4 @@
 import numpy as np
-import math
 import predicates
 
 def test_nearly_collinear():
@@ -14,9 +13,9 @@ def test_nearly_collinear():
     num_steps = 128
     for row in range(num_steps):
         zs[0, 0] = xs[0, 0]
-        zs[1, 0] = math.nextafter(zs[1, 0], math.inf)
+        zs[1, 0] = np.nextafter(zs[1, 0], np.inf)
         for col in range(num_steps):
-            zs[0, 0] = math.nextafter(zs[0, 0], math.inf)
+            zs[0, 0] = np.nextafter(zs[0, 0], np.inf)
             result = predicates.orientation(zs)
             if row == col:
                 assert result == 0.0
@@ -38,8 +37,8 @@ def test_nearly_cocircular():
     num_steps = 128
     for row in range(num_steps):
         zs[0, 0] = xs[0, 0]
-        zs[1, 0] = math.nextafter(zs[1, 0], math.inf)
+        zs[1, 0] = np.nextafter(zs[1, 0], np.inf)
         for col in range(num_steps):
-            zs[0, 0] = math.nextafter(zs[0, 0], math.inf)
+            zs[0, 0] = np.nextafter(zs[0, 0], np.inf)
             result = predicates.insphere(zs)
             # TODO: How do we actually test this...
