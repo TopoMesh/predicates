@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         boost_version: [71, 74, 83, 84]
-        gcc_version: [10, 11]
+        gcc_version: [10, 11, 14]
         python_version: [3.8, 3.12]
       fail-fast: false
     env:
