@@ -9,9 +9,9 @@ PYBIND11_MODULE(predicates, m) {
     m.def("determinant", &predicates::determinant<double, 5>);
     m.def("determinant", &predicates::determinant<double, 6>);
 
-    m.def("orientation", &predicates::orientation<double, 2>);
-    m.def("orientation", &predicates::orientation<double, 3>);
-    m.def("orientation", &predicates::orientation<double, 4>);
+    m.def("volume", &predicates::volume<double, 2>);
+    m.def("volume", &predicates::volume<double, 3>);
+    m.def("volume", &predicates::volume<double, 4>);
 
     m.def("insphere", &predicates::insphere<double, 2>);
     m.def("insphere", &predicates::insphere<double, 3>);

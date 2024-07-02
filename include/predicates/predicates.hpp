@@ -114,7 +114,7 @@ namespace predicates {
 
 
         template <typename T, int N>
-        T orientation(const Eigen::Matrix<T, N, N + 1>& points) {
+        T volume(const Eigen::Matrix<T, N, N + 1>& points) {
             Eigen::Matrix<T, N + 1, N + 1> matrix;
             // TODO: benchmark this vs doing the alternating sum directly
             matrix.template block<N, N + 1>(1, 0) = points;
@@ -139,7 +139,7 @@ namespace predicates {
 
         template <typename T, int N>
         T insphere(const Eigen::Matrix<T, N, N + 2>& points) {
-            return orientation(parabolic_lift<T, T, N>(points));
+            return volume(parabolic_lift<T, T, N>(points));
         }
 
     } // End of namespace `internal`
@@ -169,12 +169,10 @@ namespace predicates {
 
 
     /**
-     * Sign-exact computation of the orientation of a set of `N + 1` points
-     * in Euclidean `N`-space, i.e. whether the simplex they form in their
-     * current order is right- or left-handed
+     * Sign-exact computation of the signed volume of an `N`-simplex
      */
     template <typename T, int N>
-    T orientation(const Eigen::Matrix<T, N, N + 1>& points) {
+    T volume(const Eigen::Matrix<T, N, N + 1>& points) {
         Eigen::Matrix<T, N + 1, N + 1> matrix;
         // TODO: benchmark this vs doing the alternating sum directly
         matrix.template block<N, N + 1>(1, 0) = points;
@@ -185,22 +183,22 @@ namespace predicates {
 
 
     /**
-     * Sign-exact computation of whether a point is in the unique sphere
-     * passing through the remaining points
+     * Sign-exact computation of the signed volume of an `N + 1`-simplex,
+     * lifted onto a parabola
      */
     template <typename T, int N>
     T insphere(const Eigen::Matrix<T, N, N + 2>& points) {
         using Interval = boost::numeric::interval<T>;
         const auto lifted_interval_points =
             internal::parabolic_lift<Interval, T, N>(points);
-        const Interval interval_result = internal::orientation(lifted_interval_points);
+        const Interval interval_result = internal::volume(lifted_interval_points);
         if (not boost::numeric::zero_in(interval_result))
             return boost::numeric::median(interval_result);
 
         using Rational = boost::multiprecision::cpp_rational;
         const auto lifted_rational_points =
             internal::parabolic_lift<Rational, T, N>(points);
-        const Rational rational_result = internal::orientation(lifted_rational_points);
+        const Rational rational_result = internal::volume(lifted_rational_points);
         return rational_result.template convert_to<T>();
     }
 } // End of namespace `predicates`

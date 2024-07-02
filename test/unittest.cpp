@@ -24,21 +24,21 @@ int main() {
         const double z = std::nextafter(0.5, 1.5);
         points << 0.5, 12.0, 24.0,
                   z, 12.0, 24.0;
-        const double naive_det = predicates::orientation(points);
+        const double naive_det = predicates::volume(points);
 
         const Eigen::Matrix<Interval, 2, 3> interval_points = points.cast<Interval>();
-        const Interval interval_det = predicates::internal::orientation(interval_points);
+        const Interval interval_det = predicates::internal::volume(interval_points);
 
         const Eigen::Matrix<Rational, 2, 3> rational_points = points.cast<Rational>();
-        Rational rational_det = predicates::internal::orientation(rational_points);
+        Rational rational_det = predicates::internal::volume(rational_points);
 
-        const double sign_exact_det = predicates::orientation(points);
+        const double sign_exact_det = predicates::volume(points);
 
-        std::cout << "Naive orientation:      " << naive_det << "\n";
-        std::cout << "Interval orientation:   "
+        std::cout << "Naive volume:      " << naive_det << "\n";
+        std::cout << "Interval volume:   "
                   << interval_det.lower() << ", " << interval_det.upper() << "\n";
-        std::cout << "Rational orientation:   " << rational_det << "\n";
-        std::cout << "Sign-exact orientation: " << sign_exact_det << "\n";
+        std::cout << "Rational volume:   " << rational_det << "\n";
+        std::cout << "Sign-exact volume: " << sign_exact_det << "\n";
     }
 
     // Insphere tests
@@ -57,11 +57,11 @@ int main() {
         Rational rational_det = predicates::internal::insphere(rational_points);
 
         const double sign_exact_det = predicates::insphere(points);
-        std::cout << "Naive orientation:      " << naive_det << "\n";
-        std::cout << "Interval orientation:   "
+        std::cout << "Naive volume:      " << naive_det << "\n";
+        std::cout << "Interval volume:   "
                   << interval_det.lower() << ", " << interval_det.upper() << "\n";
-        std::cout << "Rational orientation:   " << rational_det << "\n";
-        std::cout << "Sign-exact orientation: " << sign_exact_det << "\n";
+        std::cout << "Rational volume:   " << rational_det << "\n";
+        std::cout << "Sign-exact volume: " << sign_exact_det << "\n";
     }
 
     return 0;

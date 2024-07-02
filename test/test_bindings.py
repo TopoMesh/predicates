@@ -16,7 +16,7 @@ def test_nearly_collinear():
         zs[1, 0] = np.nextafter(zs[1, 0], np.inf)
         for col in range(num_steps):
             zs[0, 0] = np.nextafter(zs[0, 0], np.inf)
-            result = predicates.orientation(zs)
+            result = predicates.volume(zs)
             if row == col:
                 assert result == 0.0
             elif row < col:
