@@ -26,6 +26,8 @@ jobs:
           tar xf boost.tar.gz -C boost --strip-components 1
           cd boost
           ./bootstrap.sh --with-libraries=math
+          find ./ -name "bootstrap.log"
+          cat bootstrap.log
           sudo ./b2 install
       - name: Set up Python
         uses: actions/setup-python@v5
