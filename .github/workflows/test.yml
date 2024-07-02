@@ -32,7 +32,7 @@ jobs:
         with:
           python-version: ${{ matrix.python_version }}
       - name: Install meson
-        run: pip install meson ninja pytest
+        run: pip install meson ninja pytest jupyter nbconvert matplotlib
       - name: Build and test C++ library
         run: |
           meson setup builddir/
@@ -41,3 +41,4 @@ jobs:
         run: |
           pip install .
           pytest test/
+          jupyter nbconvert --execute --ExecutePreprocessor.kernel_name=python3 --to notebook demo/demo.ipynb
