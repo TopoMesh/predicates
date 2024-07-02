@@ -21,7 +21,7 @@ jobs:
           sudo apt install -yq libeigen3-dev
       - name: Install Boost
         run: |
-          wget -O boost.tar.gz https://boostorg.jfrog.io/artifactory/main/release/1.${{ matrix.boost_version}}.0/source/boost_1_${{ matrix.boost_version }}_0.tar.gz
+          wget -q -O boost.tar.gz https://boostorg.jfrog.io/artifactory/main/release/1.${{ matrix.boost_version}}.0/source/boost_1_${{ matrix.boost_version }}_0.tar.gz
           mkdir boost
           tar xf boost.tar.gz -C boost --strip-components 1
           cd boost
