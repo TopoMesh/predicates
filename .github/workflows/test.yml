@@ -2,7 +2,7 @@ name: 'Build and test predicates'
 on: [push, pull_request]
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         boost_version: [71, 74, 83, 84]
