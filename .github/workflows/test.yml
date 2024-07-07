@@ -25,6 +25,7 @@ jobs:
           mkdir boost
           tar xf boost.tar.gz -C boost --strip-components 1
           cd boost
+          ls /usr/bin | grep gcc
           ./bootstrap.sh --with-libraries=math || cat bootstrap.log
           sudo ./b2 install
       - name: Set up Python
